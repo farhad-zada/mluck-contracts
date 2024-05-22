@@ -23,7 +23,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 contract Mluck is Ownable, ERC20, ValidateRequest, ReentrancyGuard {
     /// @dev The maximum supply of the MLK token
     /// @notice The maximum supply of the MLK token is 1000,000,000 MLK
-    uint256 public constant MAX_SUPPLY = 1_000_000_000 ether;
+    uint256 public constant MAX_SUPPLY = 100_000_000_000 ether;
 
     /// @dev The amount of MLK that should remain in the sender's account that can't be transferred or spent
     uint256 private s_remnant;
