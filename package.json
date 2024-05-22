@@ -4,7 +4,9 @@
   "description": "This is Solidity smart contracts developed by Mluck team",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dp-mluck": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network bsc",
+    "dp-mluck:testnet": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network 'tbsc'"
   },
   "repository": {
     "type": "git",

@@ -36,22 +36,6 @@ module.exports = {
       url: env.BSC_RPC,
       accounts: [env.PKEY],
     },
-    sep: {
-      url: env.SEP_RPC,
-      accounts: [env.PKEY],
-    },
-    eth: {
-      url: env.ETH_RPC,
-      accounts: [env.PKEY],
-    },
-    pol: {
-      url: env.POL_RPC,
-      accounts: [env.PKEY],
-    },
-    tpol: {
-      url: env.TPOL_RPC,
-      accounts: [env.PKEY],
-    },
   },
   contractSizer: {
     alphaSort: true,

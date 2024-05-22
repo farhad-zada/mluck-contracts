@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 import {Request} from "./structs/Request.sol";
 import {RequestType} from "./enums/RequestType.sol";
 
-abstract contract Validatable {
-    function validate(
+abstract contract ValidateRequest {
+    function validateRequest(
         RequestType _requestType,
         bytes memory _data
     ) public pure {

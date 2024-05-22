@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Validatable} from "../utils/Validatable.sol";
+import {ValidateRequest} from "../utils/ValidateRequest.sol";
 import {RequestType} from "../utils/enums/RequestType.sol";
 import {Request} from "../utils/structs/Request.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -20,7 +20,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
  * @notice Remnant MLK cannot be transferred or spent
  */
 
-contract Mluck is ERC20, Validatable, ReentrancyGuard {
+contract Mluck is Ownable, ERC20, ValidateRequest, ReentrancyGuard {
     /// @dev The maximum supply of the MLK token
     /// @notice The maximum supply of the MLK token is 1000,000,000 MLK
     uint256 public constant MAX_SUPPLY = 1_000_000_000 ether;
@@ -70,11 +70,12 @@ contract Mluck is ERC20, Validatable, ReentrancyGuard {
         _;
     }
 
-    constructor() ERC20("Mluck", "MLUCK") {
+    constructor() ERC20("Mluck", "MLUCK") Ownable(msg.sender) {
         s_remnant = 1000 gwei;
         s_governors.push(_msgSender());
         s_approveThreshold = 50;
         _mint(msg.sender, 100_000_000 ether);
+        renounceOwnership();
     }
 
     /**
@@ -86,7 +87,7 @@ contract Mluck is ERC20, Validatable, ReentrancyGuard {
         RequestType _requestType,
         bytes memory _data
     ) public onlyGovernor {
-        validate(_requestType, _data);
+        validateRequest(_requestType, _data);
         bytes32 _id = keccak256(abi.encode(s_requests.length));
         Request memory request = Request(_id, 0, _requestType, false, _data);
         s_requests.push(request);
