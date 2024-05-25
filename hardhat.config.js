@@ -30,11 +30,11 @@ module.exports = {
     },
     tbsc: {
       url: env.TBSC_RPC,
-      accounts: [env.PKEY],
+      accounts: [env.PRIVATE_KEY],
     },
     bsc: {
       url: env.BSC_RPC,
-      accounts: [env.PKEY],
+      accounts: [env.PRIVATE_KEY],
     },
   },
   contractSizer: {
