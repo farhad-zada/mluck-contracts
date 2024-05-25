@@ -1,4 +1,5 @@
-# MLUCK
+# MLUCK 
+![Mluck Contract](./images/mluck.png)
 
 ## Description
 Mluck is an ERC20 token with unique governance features. It includes functionalities for remnant balance, multi-signature approvals, and governor management. The initial supply is 100,000,000 MLK, and the maximum supply is capped at 1,000,000,000 MLK.
