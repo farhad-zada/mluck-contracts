@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dp-mluck": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network bsc",
-    "dp-mluck:testnet": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network 'tbsc'"
+    "dp:mluck": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network bsc",
+    "dp:mluck:testnet": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network 'tbsc'"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/mluck-repos/smart-contracts#readme",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ledger": "^1.0.3",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.22.3",
     "hardhat-contract-sizer": "^2.10.0"

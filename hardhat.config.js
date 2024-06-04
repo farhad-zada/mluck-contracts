@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@openzeppelin/hardhat-upgrades");
+require("@nomicfoundation/hardhat-ledger");
 require("hardhat-contract-sizer");
 require("dotenv").config();
 
@@ -30,11 +31,13 @@ module.exports = {
     },
     tbsc: {
       url: env.TBSC_RPC,
-      accounts: [env.PRIVATE_KEY],
+      // accounts: [env.PRIVATE_KEY],
+      ledgerAccounts: [env.LEDGER_ACCOUNT],
     },
     bsc: {
       url: env.BSC_RPC,
-      accounts: [env.PRIVATE_KEY],
+      // accounts: [env.PRIVATE_KEY],
+      ledgerAccounts: [env.LEDGER_ACCOUNT],
     },
   },
   contractSizer: {
@@ -44,7 +47,7 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      bsc: env.BSC_APIKEY
-    }
-  }
+      bsc: env.BSC_APIKEY,
+    },
+  },
 };
