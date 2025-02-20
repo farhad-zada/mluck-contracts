@@ -4,7 +4,8 @@
   "description": "This is Solidity smart contracts developed by Mluck team",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "hardhat test test/mluck_slot/owner.slot.test.js",
+    "testslot": "hardhat test test/mluckSlot.test.js",
     "dp:mluck": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network bsc",
     "dp:mluck:testnet": "REPORT_GAS=true hardhat run scripts/mluck.deploy.js --network 'tbsc'"
   },
@@ -20,13 +21,13 @@
   "homepage": "https://github.com/mluck-repos/smart-contracts#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-ledger": "^1.0.3",
-    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "hardhat": "^2.22.3",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.17",
     "hardhat-contract-sizer": "^2.10.0"
   },
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^5.0.2",
-    "@openzeppelin/hardhat-upgrades": "^3.1.0",
-    "dotenv": "^16.4.5"
+    "@openzeppelin/contracts-upgradeable": "^5.1.0",
+    "@openzeppelin/hardhat-upgrades": "^3.8.0",
+    "dotenv": "^16.4.7"
   }
 }

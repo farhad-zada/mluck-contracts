@@ -20,6 +20,9 @@ module.exports = {
         },
       },
       {
+        version: "0.8.22",
+      },
+      {
         version: "0.8.2",
       },
     ],
@@ -31,20 +34,20 @@ module.exports = {
     },
     tbsc: {
       url: env.TBSC_RPC,
-      // accounts: [env.PRIVATE_KEY],
+      accounts: [env.PRIVATE_KEY],
       ledgerAccounts: [env.LEDGER_ACCOUNT],
     },
     bsc: {
       url: env.BSC_RPC,
-      // accounts: [env.PRIVATE_KEY],
+      accounts: [env.PRIVATE_KEY],
       ledgerAccounts: [env.LEDGER_ACCOUNT],
     },
   },
-  contractSizer: {
-    alphaSort: true,
-    runOnCompile: true,
-    disambiguatePaths: false,
-  },
+  // contractSizer: {
+  //   alphaSort: true,
+  //   // runOnCompile: true,
+  //   disambiguatePaths: false,
+  // },
   etherscan: {
     apiKey: {
       bsc: env.BSC_APIKEY,
