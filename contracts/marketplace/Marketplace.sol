@@ -131,4 +131,9 @@ contract MLUCKMarketplace is Ownable, IMarketplace {
     function setLocker(address _locker) public onlyOwner {
         locker = ILocker(_locker);
     }
+
+    // withdraw
+    function withdraw(IERC20 _token, uint256 amount) public onlyOwner {
+        _token.transfer(_msgSender(), amount);
+    }
 }
