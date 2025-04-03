@@ -2,16 +2,25 @@
 pragma solidity ^0.8.22;
 
 import { ILocker } from "./interfaces/ILocker.sol";
-import {IMLUCKSlot} from "../slots/IMLUCKSlot.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import { IMLUCKSlot } from "../slots/IMLUCKSlot.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { IERC721Receiver } from "@openzeppelin/contracts/interfaces/IERC721Receiver.sol";
 
-contract Locker is ILocker, Ownable(msg.sender) {
-
+contract Locker is ILocker, IERC721Receiver, Ownable(msg.sender) {
     mapping(address => bool status) private s_marketplace;
 
-    modifier onlyMarketplace {
+    modifier onlyMarketplace() {
         require(s_marketplace[msg.sender], "locker: only marketplace");
         _;
+    }
+
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) public returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
     }
 
     function setMarketplaceStatus(address marketplace, bool status) public onlyOwner {
@@ -36,16 +45,12 @@ contract Locker is ILocker, Ownable(msg.sender) {
         slotApi.transferBatch(to, slots);
     }
 
-    function lock(address property, uint256[] memory slots) public {
-        IMLUCKSlot slotApi = IMLUCKSlot(property);
-        for (uint256 i = 0; i < slots.length; i++) {
-            slotApi.safeTransferFrom(_msgSender(), address(this), slots[i]);
-            emit Lock(property, _msgSender(), slots[i]);
-        }
-    }
-
     function withdraw(address property, uint256[] memory slots) public onlyOwner {
         IMLUCKSlot slotApi = IMLUCKSlot(property);
         slotApi.transferBatch(_msgSender(), slots);
+    }
+
+    function getMarketplaceStatus(address marketplace) public view returns (bool) {
+        return s_marketplace[marketplace];
     }
 }

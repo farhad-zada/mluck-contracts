@@ -16,7 +16,5 @@ interface ILocker {
 
     function massTransfer(address property, address to, uint256[] memory slots) external;
 
-    function lock(address property, uint256[] memory slots) external;
-
      function withdraw(address property, uint256[] memory slots) external;
 }

@@ -12,6 +12,7 @@ interface IMarketplace {
     error PromocodeExpired(bytes32 promocode);
     error PromocodeUsageLimitExceed(bytes32 promocode);
     error TokenTransferFailed(uint256 amount);
+    error InvalidPromocodePercent(uint256 percent);
 
     function addProperty(Property memory _property) external;
 
@@ -33,5 +34,5 @@ interface IMarketplace {
     function getPromoCode(bytes32 _promoCode) external view returns (Promocode memory);
 
     // trade
-    function buySlot(address _property, uint256[] memory _slots) external;
+    function buy(address _property, uint256[] memory _slots) external;
 }

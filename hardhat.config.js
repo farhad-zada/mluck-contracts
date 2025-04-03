@@ -42,6 +42,11 @@ module.exports = {
       accounts: [env.PRIVATE_KEY],
       ledgerAccounts: [env.LEDGER_ACCOUNT],
     },
+    pol: {
+      url: env.POL_RPC,
+      accounts: [env.PRIVATE_KEY],
+      ledgerAccounts: [env.LEDGER_ACCOUNT]
+    }
   },
   // contractSizer: {
   //   alphaSort: true,
@@ -51,6 +56,7 @@ module.exports = {
   etherscan: {
     apiKey: {
       bsc: env.BSC_APIKEY,
+      polygon: env.POL_APIKEY,
     },
   },
 };

@@ -44,7 +44,7 @@ interface IMLUCKSlot is IERC721 {
      * @dev Returns max supply. The maximum number of token, and the maximum token id
      * can be minted by this contract.
      */
-    function maxSupply() external pure returns (uint256);
+    function maxSupply() external view returns (uint256);
 
     /**
      * @dev Returns max supply. The maximum number of token, and the maximum token id
@@ -57,4 +57,7 @@ interface IMLUCKSlot is IERC721 {
      * @param _owner the address that tokens belong to.
      */
     function ownedBy(address _owner) external view returns (uint256[] memory);
+
+
+    function getOwnersList() external view returns (address[] memory);
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 struct Promocode {
     uint256 percent;
-    uint256 used;
+    uint256 maxUse;
     uint24 maxUsePerWallet;
     uint256 expiresAt;
 }

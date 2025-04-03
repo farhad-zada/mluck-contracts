@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.22;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ERC721, Strings} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import { IMLUCKSlot } from "./IMLUCKSlot.sol";
@@ -9,10 +9,11 @@ import { IMLUCKSlot } from "./IMLUCKSlot.sol";
 // TODO:
 // 1. add set option for baseURL
 contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
+    using Strings for address;
     /**
      * @dev Maximum number of slots can be mint and also the biggest slot ID (token ID).
      */
-    uint256 private constant MAX_SUPPLY = 10000;
+    uint256 private immutable MAX_SUPPLY;
 
     /**
      * @dev Total number of tokens have been minted.
@@ -21,10 +22,12 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
 
     /**
      * @dev Creates new contract for the object defined in the name specifically.
-     * @param name The name of this object, e.g. "1234 Palm Jumeirah, Dubai, UAE"
-     * @param symbol The symbol which is going to be SMLUCK for all
+     * @param _name The name of this object, e.g. "1234 Palm Jumeirah, Dubai, UAE"
+     * @param _symbol The symbol which is going to be SMLUCK for all
      */
-    constructor(string memory name, string memory symbol) ERC721(name, symbol) Ownable(msg.sender) {}
+    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC721(_name, _symbol) Ownable(msg.sender) {
+        MAX_SUPPLY = _maxSupply;
+    }
 
     /**
      * @dev See {IMLUCKSlot-mint}
@@ -41,7 +44,7 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
      * 
      * @dev See {IMLUCKSlot-mintBatch}
      */
-    function mintBatch(address to, uint256[] memory tokenIds) public {
+    function mintBatch(address to, uint256[] memory tokenIds) public onlyOwner {
         if (tokenIds.length == 0) {
             revert MLUCKSlotEmptyTokenIds();
         }
@@ -66,7 +69,7 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
     /**
      * @dev See {IMLUCKSlot-maxSupply}
      */
-    function maxSupply() public pure returns (uint256) {
+    function maxSupply() public view returns (uint256) {
         return MAX_SUPPLY;
     }
 
@@ -91,5 +94,19 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
             }
         }
         return tokenIds;
+    }
+
+    function getOwnersList() public view returns (address[] memory) {
+        address[] memory holders = new address[](s_totalSupply);
+
+        for (uint256 slotId = 1; slotId <= s_totalSupply; slotId++) {
+            holders[slotId - 1] = _ownerOf(slotId);
+        }
+
+        return holders;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return string.concat("https://chain.mluck.io/xyz/", address(this).toChecksumHexString(), "/");
     }
 }
