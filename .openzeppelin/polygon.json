@@ -1,0 +1,270 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x385a725dc4Dd5502Af276379d961aED32cdcc471",
+      "txHash": "0x57e5b68c6c1471ace2d9063bf2aaec153902eebe5bc01f6b1b9c03035feee0b4",
+      "kind": "uups"
+    }
+  ],
+  "impls": {
+    "25f750b4d5ba4bafb48810ca6fb1d77ede04ec10e08fb99da686a6d653b4431d": {
+      "address": "0x50514f05ce0193719bc738ba81baf6CC931Ea36d",
+      "txHash": "0xb8868086a2b8721cd42dfe40bc8b96c21ab231100727e1dac738f0529139f9ea",
+      "layout": {
+        "solcVersion": "0.8.22",
+        "storage": [
+          {
+            "label": "token",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IERC20)1097",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:22"
+          },
+          {
+            "label": "s_signers",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:23"
+          },
+          {
+            "label": "propertyStatus",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_enum(PropertyStatus)6789)",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:24"
+          },
+          {
+            "label": "s_properties",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_address,t_struct(Property)6783_storage)",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:25"
+          },
+          {
+            "label": "s_promocodes",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_bytes32,t_struct(Promocode)6774_storage)",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:27"
+          },
+          {
+            "label": "s_promoused",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_bytes32,t_uint256)",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:28"
+          },
+          {
+            "label": "s_promoUsedByWallet",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:29"
+          },
+          {
+            "label": "locker",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_contract(ILocker)6853",
+            "contract": "Marketplace",
+            "src": "contracts/marketplace/Marketplace.sol:31"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)73_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)13_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IERC20)1097": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_contract(ILocker)6853": {
+            "label": "contract ILocker",
+            "numberOfBytes": "20"
+          },
+          "t_enum(PropertyStatus)6789": {
+            "label": "enum PropertyStatus",
+            "members": [
+              "UNDEFINED",
+              "OPEN",
+              "CLOSE"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_enum(PropertyStatus)6789)": {
+            "label": "mapping(address => enum PropertyStatus)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(Property)6783_storage)": {
+            "label": "mapping(address => struct Property)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(bytes32 => mapping(address => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(Promocode)6774_storage)": {
+            "label": "mapping(bytes32 => struct Promocode)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Promocode)6774_storage": {
+            "label": "struct Promocode",
+            "members": [
+              {
+                "label": "percent",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "maxUse",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "maxUsePerWallet",
+                "type": "t_uint24",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "expiresAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(Property)6783_storage": {
+            "label": "struct Property",
+            "members": [
+              {
+                "label": "slotContract",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "price",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "fee",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint24": {
+            "label": "uint24",
+            "numberOfBytes": "3"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
