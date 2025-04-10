@@ -1,29 +1,18 @@
 const { ethers, run, network } = require("hardhat");
 
 const main = async () => {
-    /**
-     * Deploy Test BUSD
-     * Deploy MLUCK Slot
-     * Mint Slots on MLUCK
-     *
-     * Deploy Locker
-     * Deploy Marketplace
-     * Set up MarketPlace to use Locker
-     * Set up trade
-     * Set up secondary wallet (send BNB & send TBUSD)
-     * With Secondary Wallet:
-     *  Buy 5 Slots
-     *  Buy 2 More
-     */
-
     console.log("Hardhat development starting ⚙️");
     console.log("==========================================================================");
     console.log("Deploying Mluck Locker contract 🚀");
+
     const locker = await ethers.deployContract("Locker", []);
 
     console.log("Waiting for Mluck Locker deployment transaction to be mined ⏱️");
+
     await locker.deploymentTransaction().wait(10);
+
     console.log(`\x1b[32mMluck Slot deployed successfully at: \x1b[34m${locker.target} \x1b[0m`);
+    // VERIFY
     if (network.name === "bsc") {
         console.log(`https://bscscan.com/address/${locker.target}`);
         await verify(locker.target);

@@ -6,125 +6,137 @@
 
 ## Description
 
-Mluck is an ERC20 token with unique governance features. It includes functionalities for remnant balance, multi-signature approvals, and governor management. The initial supply is 100,000,000 MLK, and the maximum supply is capped at 1,000,000,000 MLK.
+This documentation provides step by step guide to integrate with MLUCK smart contracts.
 
-## Table of Contents
+### Getting Started
 
-1. [Introduction](#introduction)
-2. [Features](#features)
-3. [Getting Started](#getting-started)
-   - [Prerequisites](#prerequisites)
-   - [Installation](#installation)
-   - [Configuration](#configuration)
-4. [Usage](#usage)
-   - [Running Tests](#running-tests)
-   - [Deploying Contracts](#deploying-contracts)
-   - [Interacting with Contracts](#interacting-with-contracts)
-5. [Directory Structure](#directory-structure)
-6. [Contributing](#contributing)
-7. [License](#license)
+The smart contracts in this app are:
 
-## Introduction
+-   `MLUCKSlot`: This contract is the property smart contract that holds slots.
+-   `Locker`: This contract is the locker that locks the slots to be put on sales. The idea is that many marketplace contracts can sell slots from this contract. So this gives us flexiblity to create many marketplace contracts that can sell slots from this contract.
+-   `Marketplace`: This smart contract is the one that sells slots. Frontend interacts with this contract for buying slots.
+-   `TBUSD`: This is a test BUSD token created by us for development purposes which can be used for test purchases.
 
-Mluck is a standard ERC20 token with additional governance and security features. It allows for multi-signature requests by governors for minting, withdrawing, and managing other critical operations.
+### ABIs
 
-## Features
+To interact with smart contracts off-chain you first need is abis of the smart contracs.
 
-- **Remnant Balance**: Ensures a minimum balance remains in accounts.
-- **Governor Management**: Allows for adding and removing governors.
-- **Multi-Signature Approvals**: Requests for critical operations require approval from multiple governors.
-- **Withdraw Funds**: Governors can withdraw funds from the contract.
+### MLUCKSlot
 
-## Getting Started
+This contract is `ERC721` NFT contract that holds slots.
 
-### Prerequisites
+Here is an overview of the functions of this contract:
 
-- Node.js
-- npm
-- Hardhat
+-   `tokenURI(uint256 tokenId)` returns the uri of the token. This uri can be used to get info about the token.
+-   `getOwnersList()` returns the list of owners of the slots.
+-   `ownedBy(address owner)` returns the list of slots (e.g. `[1, 8, 19]`) owned by the owner.
+-   `totalSupply()` returns the total number of slots that have been minted. This means that any token ID below this number is a valid token id.
+-   `ownerOf(uint256 tokenId)` returns the owner of the token.
 
-### Installation
+### Locker
 
-```sh
-# Clone the repository
-git clone https://github.com/Mluck-Digital/smart-contracts.git
+In the frontend there is no interaction with this contract. This contract holds the slots that are intended to be put on sale. This gives us the flexiblity to create various marketplace contracts with different logics and features without changing the owner of slots that should be sold. This contract do not sell itslef.
 
-# Navigate to the project directory
-cd smart-contracts
+### TBUSD (Test BUSD)
 
-# Install dependencies
-npm install
+This is a test BUSD token created by us for development purposes which can be used for test purchases. This should be interpreted as BUSD token since the functionality is the same but this one do not hold any value.
+
+### Marketplace
+
+Here is the main contract that all the trade goes on. Consider that there would be multiple marketplace contracts that can sell slots in the future.
+
+Let's break down the functions of this contract:
+
+#### Get Property
+FYI: a single marketplace contract can sell slots from multiple propertirs. 
+To get the property info, the slots available for sale, and the sale status of slots you need to call the following get function:
+```solidity
+function getProperty(address property) external view returns (Property memory, PropertyStatus, uint256[] memory)
 ```
 
-### Configuration
 
-Create a .env file in the root directory and add the following variables:
+#### Buy Slots
 
-```sh
-PRIVATE_KEY=your_private_key
-LEDGER_ACCOUNT=ledger_account
-BSC_RPC=binance_smart_chain_rpc_url
-TBSC_RPC=test_binance_smart_chain_rpc_url
+To buy slots you need to call `buy(address property, uint256[] memory slotIds)` function. This function calculates the price of the slots and transfers the amount of BUSD from the buyer to the contract. If the transfer is successful only then it transfers slots to the buyer. To get the cost of purchase before buying you can call this function:
+
+```solidity
+function getCost(
+        address _property, // The address of the property contract
+        uint256[] memory _slotsCount // The count of slots would be purchased
+   ) external view returns (uint256 cost)
 ```
 
-You can see an example of .env file in the .example.env file.
+To buy slots you don't need to any interaction with the backend.
 
-## Usage
+#### Buy Slots With Promo
 
-### Running Tests
+To buy slots using promo code you need to call:
 
-```sh
-# Run all tests
-npx hardhat test
+```solidity
+buyWithPromo(
+        address _property,
+        uint256[] memory slots,
+        bytes32 promoHash,
+        bytes memory signature
+)
 ```
 
-### Deploying Contracts
+To call this contract you first need to acquire a signature signed from our backend then call the contract providing these info. To get the cost of purchase before buying you can call this function:
 
-```sh
-# Compile the contracts
-npx hardhat compile
-
-# Deploy the contracts to the Binance Smart Chain testnet
-npm run deploy:mluck:testnet
-
-# Deploy the contracts to the Binance Smart Chain mainnet
-npm run deploy:mluck
+```solidity
+function getCostUsingPromo(
+        address _property, // The address of the property contract
+        uint256 _slotsCount, // How many slots would be bought
+        bytes32 _promoHash // the keccak256 hash of the promo code string
+   ) external view returns (uint256 cost)
 ```
 
-### Interacting with Contracts
+To buy slots using promo code you need to get the signature signed in our backend. See [this](https://github.com/farhad-zada/chain.mluck.io?tab=readme-ov-file#promocode-routes) for more info.
 
-Interact with the deployed contracts using the Hardhat console or scripts.
 
-```lua
-.
-├── contracts
-│   ├── tokens
-│   │   ├── IMluck.sol
-│   │   └── Mluck.sol
-│   ├── utils
-│   │   ├── enums
-│   │   │   └── RequestType.sol
-│   │   ├── structs
-│   │   │    └── Request.sol
-│   │   └── ValidateRequest.sol
-├── scripts
-│   └── mluck.deploy.js
-├── test
-│   └── mluck.test.js
-├── hardhat.config.js
-├── .env
-├── .example.env
-├── .gitignore
-├── package-lock.json
-├── package.json
-└── README.md
+#### Promo Code
+
+```solidity
+   function getPromoCode(bytes32 _promoCode) public view returns (Promocode memory);
 ```
+Returns the promo code info by giving the `keccak256` hash of the promo code string.
+```solidity
+   function getUserPromoUsage(bytes32 _promoHash) external view returns (uint256);
+```
+Returns how much the user have used the promo code.
 
-## Contributing
 
-We are not open to contributions at the moment. However, you can fork the repository and make changes to your version.
-And also you can create an issue if you find any bug or have a feature request.
 
-## License
+### FAQ
+1. How to get the properties list?
+   - You need to get list of properties (addresses) from backend. See [this](https://github.com/farhad-zada/chain.mluck.io?tab=readme-ov-file#1-get-properties)
 
-This project is licensed under the MIT License.
+2. How to get if a property is on sale?
+   - You need to call the `getProperty` function of the marketplace contract. This will return the property status and the slots available for sale.
+
+3. How to get the slots available for sale?
+   - You need to call the `getProperty` function of the marketplace contract. This will return the property status and the slots available for sale.
+   
+4. How to get the slots owned by a user?  
+   - You need to call the `ownedBy` function of the MLUCKSlot contract. This will return the list of slots owned by the user.
+
+5. How to get the owner of a slot?
+   - You need to call the `ownerOf` function of the MLUCKSlot contract. This will return the owner of the slot.
+
+6. How to get the total number of slots minted?
+   - You need to call the `totalSupply` function of the MLUCKSlot contract. This will return the total number of slots minted.
+
+7. How to get the uri of a slot?
+   - You need to call the `tokenURI` function of the MLUCKSlot contract. This will return the uri of the slot.
+
+8. How to get the list of owners of the slots?
+   - You need to call the `getOwnersList` function of the MLUCKSlot contract. This will return the list of owners of the slots.
+
+9. How to get the cost of a slot?
+   - You can call the `getProperty` function that returns Property object which has `price`, `fee` fields that sum up to cost.
+
+10. How to get the cost of a slot using promo code?
+   - You can call the `getCostUsingPromo` function that returns the cost of a slot using promo code.
+   
+11. How to get the promo code info?
+   - You can call the `getPromoCode` function that returns the promo code info.

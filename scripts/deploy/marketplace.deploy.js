@@ -4,20 +4,6 @@ const locker = "0x7454b870798F34d410218A92c570dB32F3A51369";
 const token = "0xD035c1571F64f06a1856cf5f017717dDf462bA2E"; // Polygon Self TBUSD: 0xD035c1571F64f06a1856cf5f017717dDf462bA2E
 
 const main = async () => {
-    /**
-     * Deploy Test BUSD
-     * Deploy MLUCK Slot
-     * Mint Slots on MLUCK
-     *
-     * Deploy Locker
-     * Deploy Marketplace
-     * Set up MarketPlace to use Locker
-     * Set up trade
-     * Set up secondary wallet (send BNB & send TBUSD)
-     * With Secondary Wallet:
-     *  Buy 5 Slots
-     *  Buy 2 More
-     */
 
     console.log("Hardhat development starting ⚙️");
     console.log("==========================================================================");

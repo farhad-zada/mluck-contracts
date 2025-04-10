@@ -53,8 +53,11 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         delete s_properties[_slotContract];
     }
 
-    function getProperty(address property) public view returns (Property memory) {
-        return s_properties[property];
+    function getProperty(address property) public view returns (Property memory, PropertyStatus, uint256[] memory) {
+        Property memory m_property = s_properties[property];
+        uint256[] memory onSale = locker.getLockedAll(m_property.slotContract);
+        PropertyStatus m_propertyStatus = propertyStatus[m_property.slotContract];
+        return (m_property, m_propertyStatus, onSale);
     }
 
     function setPropertyStatus(address _property, PropertyStatus _status) public onlyOwner {
@@ -137,9 +140,9 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         cost = (_slotsCount * (property.price + property.fee)) - discount;
     }
 
-    function getCost(address _property, uint256[] memory _slots) public view returns (uint256 cost) {
+    function getCost(address _property, uint256 _slotsCount) public view returns (uint256 cost) {
         Property memory property = s_properties[_property];
-        cost = (_slots.length * (property.price + property.fee));
+        cost = (_slotsCount * (property.price + property.fee));
     }
 
     function getCostUsingPromo(
