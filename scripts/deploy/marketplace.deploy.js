@@ -4,10 +4,7 @@ const locker = "0x7454b870798F34d410218A92c570dB32F3A51369";
 const token = "0xD035c1571F64f06a1856cf5f017717dDf462bA2E"; // Polygon Self TBUSD: 0xD035c1571F64f06a1856cf5f017717dDf462bA2E
 
 const main = async () => {
-
-    console.log("Hardhat development starting ⚙️");
-    console.log("==========================================================================");
-    console.log("Deploying Mluck MarketPlace contract 🚀");
+    console.log("Deploying...");
 
     console.log(`Locker: ${locker}`);
     console.log(`Token: ${token}`);
@@ -17,7 +14,6 @@ const main = async () => {
         kind: "uups"
     });
 
-    console.log("Waiting for Mluck MarketPlace deployment transaction to be mined ⏱️");
     await marketplace.deploymentTransaction().wait(10);
     console.log(`\x1b[32mMluck MarketPlace deployed successfully at: \x1b[34m${marketplace.target} \x1b[0m`);
     if (network.name === "bsc") {
@@ -27,16 +23,10 @@ const main = async () => {
         console.log(`https://polygonscan.com/address/${marketplace.target}`);
         await verify(marketplace.target);
     }
-    console.log("Setting up Locker...");
     const lockerContract = await ethers.getContractAt("Locker", locker);
     await lockerContract.setMarketplaceStatus(marketplace.target, true);
-    console.log("Done!");
-    console.log("Setting up promocode signer status!");
     await marketplace.setSigner(marketplace.runner, true);
     console.log("Done!");
-    console.log("==========================================================================");
-    console.log("Hardhat deployment completed 🏁");
-    console.log("Keep up the good work 🚀🚀🚀");
 };
 
 const verify = async target => {
@@ -45,7 +35,7 @@ const verify = async target => {
         address: target,
         constructorArguments: [locker, token]
     });
-    console.log("Mluck verified on etherscan ✅");
+    console.log("verified on block explorer ✅");
 };
 
 main()

@@ -14,7 +14,6 @@ import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
-//TODO: make this upgradeable
 contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
     using ECDSA for bytes32;
     using MessageHashUtils for bytes32;
