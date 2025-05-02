@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import { IMLUCKSlot } from "./IMLUCKSlot.sol";
 
-// TODO:
-// 1. add set option for baseURL
 contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
     using Strings for address;
     /**
@@ -107,6 +105,6 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
     }
 
     function _baseURI() internal view override returns (string memory) {
-        return string.concat("https://chain.mluck.io/xyz/", address(this).toChecksumHexString(), "/");
+        return string.concat("https://chain.mluck.io/", address(this).toChecksumHexString(), "/");
     }
 }

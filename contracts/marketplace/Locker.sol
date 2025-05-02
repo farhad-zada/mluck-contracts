@@ -3,16 +3,24 @@ pragma solidity ^0.8.22;
 
 import { ILocker } from "./interfaces/ILocker.sol";
 import { IMLUCKSlot } from "../slots/IMLUCKSlot.sol";
-import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC721Receiver } from "@openzeppelin/contracts/interfaces/IERC721Receiver.sol";
+import { OwnableUpgradeable } from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract Locker is ILocker, IERC721Receiver, Ownable(msg.sender) {
+contract Locker is ILocker, UUPSUpgradeable, IERC721Receiver, OwnableUpgradeable {
     mapping(address => bool status) private s_marketplace;
 
     modifier onlyMarketplace() {
         require(s_marketplace[msg.sender], "locker: only marketplace");
         _;
     }
+
+    function initialize() public initializer {
+        __Ownable_init(msg.sender);
+        __UUPSUpgradeable_init();
+    }
+
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     function onERC721Received(
         address operator,
