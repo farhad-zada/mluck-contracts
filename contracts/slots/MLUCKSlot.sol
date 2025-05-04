@@ -85,7 +85,7 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
         uint256 balance = this.balanceOf(_owner);
         uint256[] memory tokenIds = new uint256[](balance);
         uint256 index = 0;
-        for (uint256 tokenId = 1; tokenId < MAX_SUPPLY; tokenId++) {
+        for (uint256 tokenId = 1; tokenId <= MAX_SUPPLY; tokenId++) {
             if (_ownerOf(tokenId) == _owner) {
                 tokenIds[index] = tokenId;
                 index = index + 1;
