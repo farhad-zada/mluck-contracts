@@ -96,8 +96,4 @@ contract MLUCKSlot is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     function setBaseURI(string memory baseURI_) public onlyOwner {
         s_baseURI = baseURI_;
     }
-
-    function upgraded() public pure returns (bool) {
-        return true;
-    }
 }

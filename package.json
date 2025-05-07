@@ -20,13 +20,13 @@
   },
   "homepage": "https://github.com/mluck-repos/smart-contracts#readme",
   "devDependencies": {
-    "@nomicfoundation/hardhat-ledger": "^1.0.3",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/hardhat-upgrades": "^3.9.0",
     "hardhat": "^2.22.17",
     "hardhat-contract-sizer": "^2.10.0"
   },
   "dependencies": {
+    "@nomicfoundation/hardhat-ledger": "^1.1.0",
     "@openzeppelin/contracts-upgradeable": "^5.1.0",
     "dotenv": "^16.4.7"
   }

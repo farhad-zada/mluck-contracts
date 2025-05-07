@@ -39,14 +39,15 @@ module.exports = {
         },
         bsc: {
             url: env.BSC_RPC,
+            chainId: 56,
             // accounts: [env.MARKETPLACE_PRIVATE_KEY, env.PRIVATE_KEY, env.MNEMONIC_PRIVATE_KEY],
             ledgerAccounts: [env.LEDGER_ACCOUNT]
         },
         pol: {
-            url: env.POL_RPC,
-            // accounts: [env.PRIVATE_KEY],
+            url: "https://polygon-rpc.com/",
+            chainId: 137,
             // accounts: [env.MARKETPLACE_PRIVATE_KEY, env.PRIVATE_KEY, env.MNEMONIC_PRIVATE_KEY],
-            ledgerAccounts: [env.LEDGER_ACCOUNT]
+            ledgerAccounts: [env.LEDGER_ACCOUNT],
         }
     },
     // contractSizer: {

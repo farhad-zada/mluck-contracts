@@ -1,14 +1,14 @@
-const { ethers, run, network, upgrades } = require("hardhat");
+const { ethers } = require("hardhat");
 
 const main = async () => {
     console.log("==========================================================================");
-    let locker = await ethers.getContractAt("Locker", "0x9b3909F3Fdb66F6E58c51767798869eDe2B2E4f4");
-    let marketplace = "0xb7eb310d2F3E6AF705ae7de6aEC69a51B00DaAc0"
+    let toEth = ethers.parseEther;
+    let marketplace = await ethers.getContractAt("Marketplace", "0xb7eb310d2F3E6AF705ae7de6aEC69a51B00DaAc0");
 
-    await locker.setMarketplaceStatus(marketplace, true);
+    let property = "0x5371627a1125655dec349F786236533569B65740";
+    await marketplace.setPropertyStatus(property, 1n);
     console.log("==========================================================================");
 };
-
 
 main()
     .then(() => process.exit(0))
