@@ -44,6 +44,7 @@ module.exports = {
         },
         pol: {
             url: env.POL_RPC,
+            // accounts: [env.PRIVATE_KEY],
             // accounts: [env.MARKETPLACE_PRIVATE_KEY, env.PRIVATE_KEY, env.MNEMONIC_PRIVATE_KEY],
             ledgerAccounts: [env.LEDGER_ACCOUNT]
         }

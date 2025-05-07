@@ -1,58 +1,50 @@
-// SPDX-License-Identifier: SEE LICENSE IN LICENSE
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import {ERC721, Strings} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import { IMLUCKSlot } from "./IMLUCKSlot.sol";
+import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
 
-contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
-    using Strings for address;
-    /**
-     * @dev Maximum number of slots can be mint and also the biggest slot ID (token ID).
-     */
-    uint256 private immutable MAX_SUPPLY;
-
+contract MLUCKSlot is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     /**
      * @dev Total number of tokens have been minted.
      */
     uint256 private s_totalSupply;
 
+    string public s_baseURI;
+
     /**
      * @dev Creates new contract for the object defined in the name specifically.
-     * @param _name The name of this object, e.g. "1234 Palm Jumeirah, Dubai, UAE"
-     * @param _symbol The symbol which is going to be SMLUCK for all
+     * @param name_ The name of this object, e.g. "1234 Palm Jumeirah, Dubai, UAE"
+     * @param symbol_ The symbol which is going to be SMLUCK for all
      */
-    constructor(string memory _name, string memory _symbol, uint256 _maxSupply) ERC721(_name, _symbol) Ownable(msg.sender) {
-        MAX_SUPPLY = _maxSupply;
+    function initialize(
+        string memory name_,
+        string memory symbol_,
+        string memory baseURI_
+    ) public initializer {
+        __Ownable_init(msg.sender);
+        __ERC721_init(name_, symbol_);
+        s_baseURI = baseURI_;
     }
+
+    function _authorizeUpgrade(address newImplementation)
+        internal
+        override
+        onlyOwner
+    {}
 
     /**
      * @dev See {IMLUCKSlot-mint}
      */
-    function mint(address to, uint256 tokenId) public onlyOwner {
-        if (tokenId > MAX_SUPPLY || tokenId < 0) {
-            revert MLUCKSlotTokenIdOutOfRange(tokenId);
+    function mint(address to, uint256 items) public onlyOwner {
+        uint256 nextTokenId = s_totalSupply + 1;
+        for (nextTokenId; nextTokenId <= s_totalSupply + items; nextTokenId++) {
+            _safeMint(to, nextTokenId);
         }
-        s_totalSupply = s_totalSupply + 1;
-        _safeMint(to, tokenId);
-    }
 
-    /**
-     * 
-     * @dev See {IMLUCKSlot-mintBatch}
-     */
-    function mintBatch(address to, uint256[] memory tokenIds) public onlyOwner {
-        if (tokenIds.length == 0) {
-            revert MLUCKSlotEmptyTokenIds();
-        }
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            if (tokenIds[i] > MAX_SUPPLY || tokenIds[i] < 0) {
-                revert MLUCKSlotTokenIdOutOfRange(tokenIds[i]);
-            }
-            _safeMint(to, tokenIds[i]);
-        }
-        s_totalSupply = s_totalSupply + tokenIds.length;
+        s_totalSupply = s_totalSupply + items;
     }
 
     /**
@@ -62,13 +54,6 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
         for (uint256 i = 0; i < tokenIds.length; i++) {
             _safeTransfer(msg.sender, to, tokenIds[i]);
         }
-    }
-
-    /**
-     * @dev See {IMLUCKSlot-maxSupply}
-     */
-    function maxSupply() public view returns (uint256) {
-        return MAX_SUPPLY;
     }
 
     /**
@@ -85,7 +70,7 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
         uint256 balance = this.balanceOf(_owner);
         uint256[] memory tokenIds = new uint256[](balance);
         uint256 index = 0;
-        for (uint256 tokenId = 1; tokenId <= MAX_SUPPLY; tokenId++) {
+        for (uint256 tokenId = 1; tokenId <= this.totalSupply(); tokenId++) {
             if (_ownerOf(tokenId) == _owner) {
                 tokenIds[index] = tokenId;
                 index = index + 1;
@@ -105,6 +90,14 @@ contract MLUCKSlot is ERC721, Ownable, IMLUCKSlot {
     }
 
     function _baseURI() internal view override returns (string memory) {
-        return string.concat("https://chain.mluck.io/", address(this).toChecksumHexString(), "/");
+        return s_baseURI;
+    }
+
+    function setBaseURI(string memory baseURI_) public onlyOwner {
+        s_baseURI = baseURI_;
+    }
+
+    function upgraded() public pure returns (bool) {
+        return true;
     }
 }

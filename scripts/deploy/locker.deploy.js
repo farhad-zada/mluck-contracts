@@ -1,37 +1,15 @@
-const { ethers, run, network } = require("hardhat");
+const { ethers, network, upgrades } = require("hardhat");
 
 const main = async () => {
-    console.log("Hardhat development starting ⚙️");
     console.log("==========================================================================");
-    console.log("Deploying Mluck Locker contract 🚀");
+    let Locker = await ethers.getContractFactory("Locker");
+    const locker = await upgrades.deployProxy(Locker, [], { kind: "uups", initializer: "initialize" });
 
-    const locker = await ethers.deployContract("Locker", []);
-
-    console.log("Waiting for Mluck Locker deployment transaction to be mined ⏱️");
-
-    await locker.deploymentTransaction().wait(10);
-
-    console.log(`\x1b[32mMluck Slot deployed successfully at: \x1b[34m${locker.target} \x1b[0m`);
-    // VERIFY
-    if (network.name === "bsc") {
-        console.log(`https://bscscan.com/address/${locker.target}`);
-        await verify(locker.target);
-    } else if (network.name === "pol") {
-        console.log(`https://polygonscan.com/address/${locker.target}`);
-        await verify(locker.target);
+    if (network.name !== "hardhat") {
+        await locker.deploymentTransaction().wait(5);
     }
+    console.log(`Locker deployed at ${locker.target}`);
     console.log("==========================================================================");
-    console.log("Hardhat deployment completed 🏁");
-    console.log("Keep up the good work 🚀🚀🚀");
-};
-
-const verify = async target => {
-    console.log("\n\nVerifying contract on block explorer 🚦");
-    await run("verify:verify", {
-        address: target,
-        constructorArguments: []
-    });
-    console.log("Mluck verified on etherscan ✅");
 };
 
 main()

@@ -207,6 +207,14 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         locker = ILocker(_locker);
     }
 
+    function getToken() public view returns (address) {
+        return address(token);
+    }
+
+     function setToken(address token_) public onlyOwner {
+        token = IERC20(token_);
+    }
+
     // withdraw
     function withdraw(IERC20 _token, uint256 amount) public onlyOwner {
         _token.transfer(_msgSender(), amount);
