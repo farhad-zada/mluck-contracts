@@ -26,6 +26,8 @@
     "hardhat-contract-sizer": "^2.10.0"
   },
   "dependencies": {
+    "@ledgerhq/hw-app-eth": "^6.45.4",
+    "@ledgerhq/hw-transport-node-hid": "^6.29.5",
     "@nomicfoundation/hardhat-ledger": "^1.1.0",
     "@openzeppelin/contracts-upgradeable": "^5.1.0",
     "dotenv": "^16.4.7"

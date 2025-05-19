@@ -46,8 +46,8 @@ module.exports = {
         pol: {
             url: "https://polygon-rpc.com/",
             chainId: 137,
-            // accounts: [env.MARKETPLACE_PRIVATE_KEY, env.PRIVATE_KEY, env.MNEMONIC_PRIVATE_KEY],
-            ledgerAccounts: [env.LEDGER_ACCOUNT],
+            // accounts: [env.PRIVATE_KEY],
+            ledgerAccounts: [env.LEDGER_ACCOUNT]
         }
     },
     // contractSizer: {
