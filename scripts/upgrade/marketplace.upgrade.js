@@ -2,17 +2,9 @@ const { ethers, run, network, upgrades } = require("hardhat");
 
 const main = async () => {
     console.log("==========================================================================");
-    let locker = "0x9b3909F3Fdb66F6E58c51767798869eDe2B2E4f4"
-    let token = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
     const Marketplace = await ethers.getContractFactory("Marketplace");
-    const marketplace = await upgrades.deployProxy(Marketplace, [locker, token], {
-        initializer: "initialize",
-        kind: "uups"
-    });
-
-    if (network.name !== "hardhat") {
-        await marketplace.deploymentTransaction().wait(5);
-    }
+    const marketplace = await upgrades.upgradeProxy("0xb7eb310d2F3E6AF705ae7de6aEC69a51B00DaAc0", Marketplace);
+    console.log("Marketplace upgraded");
     console.log("==========================================================================");
 };
 

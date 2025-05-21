@@ -5,11 +5,6 @@ import { IERC721 } from "@openzeppelin/contracts/interfaces/IERC721.sol";
 
 interface IMLUCKSlot is IERC721 {
     /**
-     * @dev Inticates that the token ID (`tokenId`) is out of range, i.e. either less than 1 or greater than MAX_SUPPLY.
-     * @param tokenId (uint256) The token ID that is out of range.
-     */
-    error MLUCKSlotTokenIdOutOfRange(uint256 tokenId);
-    /**
      * @dev Indicates that the token IDs array is empty.
      */
     error MLUCKSlotEmptyTokenIds();
@@ -26,12 +21,8 @@ interface IMLUCKSlot is IERC721 {
     /**
      * @dev See {ERC721-_sefeMint()}.
      */
-    function mint(address to, uint256 tokenId) external;
+    function mint(address to, uint256 items) external;
 
-    /**
-     * @dev Mints multiple tokens to the given addresses.
-     */
-    function mintBatch(address to, uint256[] memory tokenIds) external;
 
     /**
      * @dev Transfer multiple tokens to multiple addresses at once.
@@ -39,12 +30,6 @@ interface IMLUCKSlot is IERC721 {
      * @param tokenIds the list of token IDs to transfer.
      */
     function transferBatch(address to, uint256[] memory tokenIds) external;
-
-    /**
-     * @dev Returns max supply. The maximum number of token, and the maximum token id
-     * can be minted by this contract.
-     */
-    function maxSupply() external view returns (uint256);
 
     /**
      * @dev Returns max supply. The maximum number of token, and the maximum token id

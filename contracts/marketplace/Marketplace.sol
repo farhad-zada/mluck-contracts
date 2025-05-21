@@ -10,11 +10,10 @@ import { Promocode } from "./Promocode.sol";
 import { Property } from "./Property.sol";
 import { PropertyStatus } from "./PropertyStatus.sol";
 import { ILocker } from "./interfaces/ILocker.sol";
-import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { MessageHashUtils } from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
-//TODO: make this upgradeable
 contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
     using ECDSA for bytes32;
     using MessageHashUtils for bytes32;
@@ -30,6 +29,9 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
 
     ILocker locker;
 
+    address private revenueReceiver;
+    mapping(address => address) private s_propertyRevenueReceiver;
+
     modifier tradableProperty(address _property) {
         require(propertyStatus[_property] == PropertyStatus.OPEN, "property is not open to trade!");
         _;
@@ -42,7 +44,7 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         token = IERC20(_token);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal onlyOwner override {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // property funcs
     function addProperty(Property memory _property) public onlyOwner {
@@ -53,8 +55,11 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         delete s_properties[_slotContract];
     }
 
-    function getProperty(address property) public view returns (Property memory) {
-        return s_properties[property];
+    function getProperty(address property) public view returns (Property memory, PropertyStatus, uint256[] memory) {
+        Property memory m_property = s_properties[property];
+        uint256[] memory onSale = locker.getLockedAll(m_property.slotContract);
+        PropertyStatus m_propertyStatus = propertyStatus[m_property.slotContract];
+        return (m_property, m_propertyStatus, onSale);
     }
 
     function setPropertyStatus(address _property, PropertyStatus _status) public onlyOwner {
@@ -105,8 +110,10 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
     }
 
     function _buy(address _property, uint256[] memory _slots, uint256 _cost) internal {
-        bool success = token.transferFrom(_msgSender(), address(this), _cost);
-        if (!success) revert TokenTransferFailed(_cost);
+        address _revenueReceiver = s_propertyRevenueReceiver[_property];
+        _revenueReceiver = _revenueReceiver != address(0) ? _revenueReceiver : address(this);
+        bool success = token.transferFrom(_msgSender(), _revenueReceiver, _cost);
+        require(success, "marketplace: token transfer failed");
         locker.massTransfer(_property, _msgSender(), _slots);
     }
 
@@ -137,9 +144,9 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         cost = (_slotsCount * (property.price + property.fee)) - discount;
     }
 
-    function getCost(address _property, uint256[] memory _slots) public view returns (uint256 cost) {
+    function getCost(address _property, uint256 _slotsCount) public view returns (uint256 cost) {
         Property memory property = s_properties[_property];
-        cost = (_slots.length * (property.price + property.fee));
+        cost = (_slotsCount * (property.price + property.fee));
     }
 
     function getCostUsingPromo(
@@ -154,9 +161,7 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
 
     // promo codes
     function setPromoCode(bytes32 _promoCodeHash, Promocode memory _promocode) public onlyOwner {
-        if (_promocode.percent < 1 || _promocode.percent > 10000) {
-            revert InvalidPromocodePercent(_promocode.percent);
-        }
+        require(_promocode.percent >= 1 || _promocode.percent <= 10000, "marketplace: invalid promocode percent");
         s_promocodes[_promoCodeHash] = _promocode;
     }
 
@@ -166,10 +171,13 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         address user,
         Promocode memory promoCode
     ) public view {
-        if (promoCode.expiresAt < block.timestamp) revert PromocodeExpired(promoHash);
-        require(s_promoUsedByWallet[promoHash][user] < promoCode.maxUsePerWallet, "promo usage exceeded limit");
+        require(promoCode.expiresAt > block.timestamp, "marketplace: promo code expired");
+        require(
+            s_promoUsedByWallet[promoHash][user] < promoCode.maxUsePerWallet,
+            "marketplace: promo usage exceeded limit"
+        );
         address signer = keccak256(abi.encode(promoHash, user)).toEthSignedMessageHash().recover(signature);
-        if (!s_signers[signer]) revert InvalidSigner(signature, signer);
+        require(s_signers[signer], "marketplace: invalid signer");
     }
 
     function deletePromoCode(bytes32 _promoCode) public onlyOwner {
@@ -205,8 +213,24 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         locker = ILocker(_locker);
     }
 
+    function getToken() public view returns (address) {
+        return address(token);
+    }
+
+    function setToken(address token_) public onlyOwner {
+        token = IERC20(token_);
+    }
+
     // withdraw
     function withdraw(IERC20 _token, uint256 amount) public onlyOwner {
         _token.transfer(_msgSender(), amount);
+    }
+
+    function getRevenueReceiver(address _property) public view returns (address) {
+        return s_propertyRevenueReceiver[_property];
+    }
+
+    function setRevenueReceiver(address _property, address _revenueReceiver) public onlyOwner {
+        s_propertyRevenueReceiver[_property] = _revenueReceiver;
     }
 }
