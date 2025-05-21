@@ -30,6 +30,7 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
     ILocker locker;
 
     address private revenueReceiver;
+    mapping(address => address) private s_propertyRevenueReceiver;
 
     modifier tradableProperty(address _property) {
         require(propertyStatus[_property] == PropertyStatus.OPEN, "property is not open to trade!");
@@ -43,7 +44,7 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         token = IERC20(_token);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal onlyOwner override {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
     // property funcs
     function addProperty(Property memory _property) public onlyOwner {
@@ -109,7 +110,8 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
     }
 
     function _buy(address _property, uint256[] memory _slots, uint256 _cost) internal {
-        address _revenueReceiver = revenueReceiver != address(0) ? revenueReceiver : address(this);
+        address _revenueReceiver = s_propertyRevenueReceiver[_property];
+        _revenueReceiver = _revenueReceiver != address(0) ? _revenueReceiver : address(this);
         bool success = token.transferFrom(_msgSender(), _revenueReceiver, _cost);
         require(success, "marketplace: token transfer failed");
         locker.massTransfer(_property, _msgSender(), _slots);
@@ -170,7 +172,10 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         Promocode memory promoCode
     ) public view {
         require(promoCode.expiresAt > block.timestamp, "marketplace: promo code expired");
-        require(s_promoUsedByWallet[promoHash][user] < promoCode.maxUsePerWallet, "marketplace: promo usage exceeded limit");
+        require(
+            s_promoUsedByWallet[promoHash][user] < promoCode.maxUsePerWallet,
+            "marketplace: promo usage exceeded limit"
+        );
         address signer = keccak256(abi.encode(promoHash, user)).toEthSignedMessageHash().recover(signature);
         require(s_signers[signer], "marketplace: invalid signer");
     }
@@ -212,7 +217,7 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         return address(token);
     }
 
-     function setToken(address token_) public onlyOwner {
+    function setToken(address token_) public onlyOwner {
         token = IERC20(token_);
     }
 
@@ -221,11 +226,11 @@ contract Marketplace is OwnableUpgradeable, UUPSUpgradeable, IMarketplace {
         _token.transfer(_msgSender(), amount);
     }
 
-    function getRevenueReceiver() public view returns (address) {
-        return revenueReceiver;
+    function getRevenueReceiver(address _property) public view returns (address) {
+        return s_propertyRevenueReceiver[_property];
     }
 
-    function setRevenueReceiver(address _revenueReceiver) public onlyOwner {
-        revenueReceiver = _revenueReceiver;
+    function setRevenueReceiver(address _property, address _revenueReceiver) public onlyOwner {
+        s_propertyRevenueReceiver[_property] = _revenueReceiver;
     }
 }
